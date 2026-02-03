@@ -37,9 +37,15 @@ class TrayIcon:
         # run Settings in a way that respects the loop.
         
         # Simple hack: Initialize ctk root if needed
-        if self.root is None or not self.root.winfo_exists():
-            self.root = ctk.CTk()
-            self.root.withdraw() # Hide the main root
+        # Initialize COM for the new thread (Required for pywin32 shortcuts)
+        import pythoncom
+        pythoncom.CoInitialize()
+
+        # Ensure we have a fresh root for the new thread basically
+        # Actually in Tkinter, creating a new root in a new thread is risky if another root existed.
+        # But here we destroyed the old one (if we did).
+        self.root = ctk.CTk()
+        self.root.withdraw() # Hide the main root
         
         from gui import SettingsWindow
         
@@ -53,6 +59,13 @@ class TrayIcon:
             
         SettingsWindow(self.root, "config.json", on_prop_close)
         self.root.mainloop()
+
+        # Cleanup so we can recreate next time
+        try:
+            self.root.destroy()
+        except:
+            pass
+        self.root = None
 
     def reload_listener_config(self):
         import json
