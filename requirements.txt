@@ -1,0 +1,9 @@
+vosk
+sounddevice
+numpy
+pystray
+Pillow
+requests
+tqdm
+wmi
+pywin32

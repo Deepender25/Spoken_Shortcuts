@@ -1,0 +1,8 @@
+{
+    "apps": [
+        "calc.exe",
+        "notepad.exe"
+    ],
+    "wake_phrase": "wake up",
+    "trigger_phrase": "open"
+}

@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+model/
+# User config might contain personal prefs, but we might want to track a default one. 
+# Let's ignore the actual runtime config if we modify it, but we can commit a template.
+# For now, let's just ignore the model folder and venv.
+.vscode/
+.agent/
+
