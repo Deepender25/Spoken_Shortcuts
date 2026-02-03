@@ -12,12 +12,15 @@ class TrayIcon:
         self.icon = None
         self.startup_mgr = StartupManager()
         self.root = None # Tkinter root
+        
+        # Register callback for listener state
+        self.listener.on_state_change = self.update_icon_state
 
-    def create_image(self):
+    def create_image(self, color="black"):
         # Generate an image for the icon
         width = 64
         height = 64
-        color1 = "black"
+        color1 = color
         color2 = "white"
         
         image = Image.new('RGB', (width, height), color1)
@@ -30,6 +33,13 @@ class TrayIcon:
             fill=color2)
             
         return image
+
+    def update_icon_state(self, paused):
+        if self.icon:
+            # Red if paused, Green if active (or standard black/default)
+            # using Green for active to be clear 
+            color = "red" if paused else "green" 
+            self.icon.icon = self.create_image(color)
 
     def run_settings(self):
         # We need to run UI in main thread usually, or careful with threads
@@ -88,11 +98,11 @@ class TrayIcon:
             if self.root:
                 self.root.quit()
             os._exit(0)
-        elif txt == 'Enable':
-            self.listener.paused = False
+        elif txt == 'Resume Listening':
+            self.listener.set_paused(False)
             print("Resumed via Tray.")
-        elif txt == 'Pause':
-            self.listener.paused = True
+        elif txt == 'Pause Listening':
+            self.listener.set_paused(True)
             print("Paused via Tray.")
         elif txt == 'Add to Startup':
             self.startup_mgr.add_to_startup()
@@ -108,11 +118,23 @@ class TrayIcon:
         t = threading.Thread(target=self.run_settings)
         t.start()
 
+    def get_status_text(self, item):
+        return "Status: Paused" if self.listener.paused else "Status: Listening"
+
+    def get_toggle_text(self, item):
+        return "Resume Listening" if self.listener.paused else "Pause Listening"
+
     def run(self):
-        image = self.create_image()
+        # Start green (Active)
+        image = self.create_image("green")
+        
+        # Defining menu items
+        # 1. Status (Disabled, just info)
+        # 2. Toggle (Pause/Resume)
+        
         menu = pystray.Menu(
-            pystray.MenuItem('Enable', self.on_clicked, checked=lambda item: not self.listener.paused),
-            pystray.MenuItem('Pause', self.on_clicked, checked=lambda item: self.listener.paused),
+            pystray.MenuItem(self.get_status_text, None, enabled=False),
+            pystray.MenuItem(self.get_toggle_text, self.on_clicked),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem('Configure Apps', self.show_settings_safe),
             pystray.Menu.SEPARATOR,
@@ -122,6 +144,6 @@ class TrayIcon:
             pystray.MenuItem('Exit', self.on_clicked)
         )
         
-        self.icon = pystray.Icon("WakeApp", image, "Wake Assistant", menu)
+        self.icon = pystray.Icon("Spoken_Shortcuts", image, "Spoken_Shortcuts", menu)
         self.icon.run()
 

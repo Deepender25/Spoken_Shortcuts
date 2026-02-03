@@ -11,7 +11,7 @@ ctk.set_default_color_theme("blue")
 class SettingsWindow(ctk.CTkToplevel):
     def __init__(self, parent, config_path, on_close_callback):
         super().__init__(parent)
-        self.title("Wake Assistant - Select Apps")
+        self.title("Spoken_Shortcuts - Select Apps")
         self.geometry("600x700")
         
         self.config_path = config_path
@@ -38,6 +38,9 @@ class SettingsWindow(ctk.CTkToplevel):
         self.entry_search = ctk.CTkEntry(self.header, placeholder_text="Search...")
         self.entry_search.pack(side="right", padx=10)
         self.entry_search.bind("<KeyRelease>", self.filter_list)
+        
+        self.btn_refresh = ctk.CTkButton(self.header, text="↻ Refresh", width=60, command=self.refresh_apps)
+        self.btn_refresh.pack(side="right", padx=5)
 
         # Content Area (Scrollable)
         self.scroll_frame = ctk.CTkScrollableFrame(self, label_text="Installed Applications")
@@ -59,6 +62,16 @@ class SettingsWindow(ctk.CTkToplevel):
         self.btn_cancel.pack(side="left", padx=10)
 
         # Load apps async
+        self.refresh_apps()
+
+    def refresh_apps(self):
+        # Clear UI
+        for widget in self.scroll_frame.winfo_children():
+            widget.destroy()
+            
+        self.lbl_loading = ctk.CTkLabel(self.scroll_frame, text="Scanning apps... Please wait.")
+        self.lbl_loading.pack(pady=20)
+        
         threading.Thread(target=self.load_apps, daemon=True).start()
 
     def load_apps(self):
@@ -80,8 +93,15 @@ class SettingsWindow(ctk.CTkToplevel):
         
         final_list = []
         for app in scanned:
-            # Extract icon
-            icon_img = self.scanner.extract_icon(app['path'])
+            # Extract icon using the LNK path if available, fall back to target path
+            # This ensures we get the "PWA" icon or "Application" icon properly
+            icon_source = app.get('lnk_path', app['path'])
+            try:
+                # If it's a Chrome App shim, sometimes the icon is weird, but usually LNK works best
+                icon_img = self.scanner.extract_icon(icon_source)
+            except:
+                icon_img = None
+                
             ctk_img = None
             if icon_img:
                 ctk_img = ctk.CTkImage(light_image=icon_img, dark_image=icon_img, size=(24, 24))
@@ -95,32 +115,50 @@ class SettingsWindow(ctk.CTkToplevel):
                 "selected": is_selected
             })
             
+            # Fallback icon if none
+            if not ctk_img:
+                # Create a simple colored placeholder or use a default asset?
+                # For now just an empty space or a generic text symbol
+                pass 
+
+            self.apps_data.append({
+                "name": app['name'],
+                "path": app['path'],
+                "icon": ctk_img,
+                "selected": is_selected
+            })
+            
         self.after(0, lambda: self.populate_ui(final_list))
 
     def populate_ui(self, app_list):
         self.lbl_loading.destroy()
-        self.apps_data = [] # Store widget refs
+        self.apps_data = [] 
         
         for app in app_list:
-            # Checkbox variable
-            var = ctk.BooleanVar(value=app['selected'])
+            # Row Frame (Card Style)
+            row = ctk.CTkFrame(self.scroll_frame, fg_color=("gray90", "gray20"), corner_radius=8)
+            row.pack(fill="x", pady=4, padx=5)
             
-            # Row Frame
-            row = ctk.CTkFrame(self.scroll_frame, fg_color="transparent")
-            row.pack(fill="x", pady=2)
-            
+            # Use columns to align nicely
+            row.grid_columnconfigure(2, weight=1)
+
             # Checkbox
-            chk = ctk.CTkCheckBox(row, text="", variable=var, width=24)
-            chk.pack(side="left", padx=5)
+            var = ctk.BooleanVar(value=app['selected'])
+            chk = ctk.CTkCheckBox(row, text="", variable=var, width=24, checkbox_width=20, checkbox_height=20)
+            chk.grid(row=0, column=0, padx=(10, 5), pady=10)
             
             # Icon
             if app['icon']:
                 lbl_icon = ctk.CTkLabel(row, text="", image=app['icon'])
-                lbl_icon.pack(side="left", padx=5)
+                lbl_icon.grid(row=0, column=1, padx=5, pady=5)
+            else:
+                # Placeholder for missing icon
+                lbl_icon = ctk.CTkLabel(row, text="App", width=24, text_color="gray")
+                lbl_icon.grid(row=0, column=1, padx=5, pady=5)
             
             # Name
-            lbl_name = ctk.CTkLabel(row, text=app['name'], anchor="w")
-            lbl_name.pack(side="left", fill="x", expand=True, padx=5)
+            lbl_name = ctk.CTkLabel(row, text=app['name'], font=("Segoe UI", 12), anchor="w")
+            lbl_name.grid(row=0, column=2, sticky="ew", padx=10, pady=10)
             
             self.apps_data.append({
                 "frame": row,

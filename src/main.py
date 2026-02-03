@@ -1,17 +1,24 @@
 import sys
+import os
 import threading
 import json
 import time
 
-# Add src to path if needed, though we run from root usually
-sys.path.append('src')
+# Ensure we run from the project root (parent of 'src')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+os.chdir(project_root)
+
+# Add src to path if needed (though running this file usually puts it in path)
+if 'src' not in sys.path:
+    sys.path.append('src')
 
 from listener import AudioListener
 from launcher import AppLauncher
 from tray import TrayIcon
 
 def main():
-    print("Starting Wake-Clap Assistant...")
+    print("Starting Spoken_Shortcuts...")
     
     # Load config
     try:

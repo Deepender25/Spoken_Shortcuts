@@ -3,7 +3,7 @@ import sys
 import os
 
 class StartupManager:
-    def __init__(self, app_name="WakeAssistant"):
+    def __init__(self, app_name="Spoken_Shortcuts"):
         self.app_name = app_name
         self.key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 
@@ -17,9 +17,9 @@ class StartupManager:
         # If this is run from main.py, the script path is valid.
         
         # We need the absolute path to main.py
-        # Assuming we are calling this from src/main.py
-        # Current dir might be project root.
-        script_path = os.path.abspath(os.path.join(os.getcwd(), "src", "main.py"))
+        # This file is in src/, so main.py is in the same directory.
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_dir, "main.py")
         
         # Command: "path/to/venv/pythonw.exe" "path/to/src/main.py"
         # Use pythonw.exe to avoid console window if possible, but for now python.exe is safer for debugging.
