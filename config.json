@@ -1,7 +1,7 @@
 {
     "apps": [
-        "calc.exe",
-        "notepad.exe"
+        "C:\\Users\\yadav\\AppData\\Local\\Programs\\Antigravity\\Antigravity.exe",
+        "C:\\Users\\yadav\\AppData\\Local\\Programs\\Opera\\opera.exe"
     ],
     "wake_phrase": "wake up",
     "trigger_phrase": "open"

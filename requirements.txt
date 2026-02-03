@@ -7,3 +7,6 @@ requests
 tqdm
 wmi
 pywin32
+customtkinter
+darkdetect
+
