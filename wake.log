@@ -1,0 +1,37 @@
+2026-02-04 20:33:36,674 - INFO - ----------------------------------------------------------------
+2026-02-04 20:33:36,674 - INFO - Starting Spoken_Shortcuts Application...
+2026-02-04 20:33:36,675 - INFO - Waiting for 10 seconds startup delay...
+2026-02-04 20:33:46,675 - INFO - Loading Vosk model from model...
+2026-02-04 20:33:46,968 - INFO - Model loaded successfully.
+2026-02-04 20:33:46,968 - INFO - Vosk Grammar set to: ["wake up", "open", "[unk]"]
+2026-02-04 20:33:46,972 - INFO - Listener started.
+2026-02-04 20:33:46,972 - INFO - Listener thread started.
+2026-02-04 20:33:46,972 - INFO - Starting Tray Icon...
+2026-02-04 20:33:46,973 - INFO - Microphone Active. Listening...
+2026-02-04 20:33:50,023 - INFO - Heard: wake up
+2026-02-04 20:33:50,026 - INFO - Wake word 'wake up' detected!
+2026-02-04 20:33:52,276 - INFO - Heard: open
+2026-02-04 20:33:52,276 - INFO - Command 'open' detected!
+2026-02-04 20:35:12,597 - INFO - Microphone Active. Listening...
+2026-02-04 20:35:18,288 - INFO - Heard: [unk] [unk]
+2026-02-04 20:35:19,784 - INFO - Heard: wake up
+2026-02-04 20:35:19,785 - INFO - Wake word 'wake up' detected!
+2026-02-04 20:35:24,787 - INFO - Timeout waiting for command. Returning to IDLE.
+2026-02-04 20:37:44,288 - INFO - Heard: wake up
+2026-02-04 20:37:44,288 - INFO - Wake word 'wake up' detected!
+2026-02-04 20:37:45,785 - INFO - Heard: open
+2026-02-04 20:37:45,786 - INFO - Command 'open' detected!
+2026-02-04 20:39:21,050 - INFO - ----------------------------------------------------------------
+2026-02-04 20:39:21,050 - INFO - Starting Spoken_Shortcuts Application...
+2026-02-04 20:39:21,051 - INFO - Waiting for 10 seconds startup delay...
+2026-02-04 20:39:31,051 - INFO - Loading Vosk model from model...
+2026-02-04 20:39:31,508 - INFO - Model loaded successfully.
+2026-02-04 20:39:31,508 - INFO - Vosk Grammar set to: ["hey", "wake up", "[unk]"]
+2026-02-04 20:39:31,510 - INFO - Listener started.
+2026-02-04 20:39:31,511 - INFO - Listener thread started.
+2026-02-04 20:39:31,511 - INFO - Starting Tray Icon...
+2026-02-04 20:39:31,511 - INFO - Microphone Active. Listening...
+2026-02-04 20:39:37,061 - INFO - Heard: hey
+2026-02-04 20:39:37,061 - INFO - Wake word 'hey' detected!
+2026-02-04 20:39:39,811 - INFO - Heard: wake up
+2026-02-04 20:39:39,811 - INFO - Command 'open' detected!
